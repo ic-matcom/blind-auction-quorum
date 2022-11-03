@@ -1,0 +1,100 @@
+\chapter*{Introducción}\label{chapter:introduction}
+\addcontentsline{toc}{chapter}{Introducción}
+
+  \hspace*{}
+
+  Cuando el 31 de octubre de 2008 Satoshi Nakamoto publicó el artículo \textit{Bitcoin: A Peer-to-Peer Electronic Cash System} (documento 
+  técnico original de la bien conocida y primera criptomoneda: Bitcoin) ~\parencite{satoshi2008}, creó las bases de una tecnología que 
+  está revolucionando al mundo, y el autor no se refiere al que bien pudiera ser el sistema de pago que sustituya al dólar y al dinero 
+  fiat en un futuro, sino a la blockchain.
+  
+  Blockchain se traduce como cadena de bloques. Básicamente, blockchain es un conjunto de tecnologías que permiten llevar un registro 
+  seguro, descentralizado, sincronizado y distribuido de operaciones digitales, sin necesidad de la intermediación de terceros \parencite{solunion2021}.
+
+  En ese sentido, la definición más completa es la dada por Don \& Alex Tapscott en su libro Blockchain Revolution 
+  : “un libro de 
+  contabilidad digital incorruptible de transacciones económicas que se puede programar para registrar no solo transacciones financieras, 
+  sino prácticamente todo lo que tiene valor”~\parencite{tapscott2016blockchain}. Cada uno de los bloques de datos se encuentra protegido y vinculado entre sí 
+  criptográficamente. Las transacciones no las verifica un tercero, sino la red 
+  de nodos (computadores conectados a la red), que también es la que autoriza en consenso cualquier actualización en la blockchain \parencite{solunion2021}.
+
+  A finales de 2013, Vitalik Buterin publica el que luego se convertiría en el documento técnico (white paper) de Ethereum 
+  \parencite{buterin2013}. Este joven, quien hasta ese momento era uno de los
+  programadores involucrado en el ecosistema Bitcoin, había notado el potencial de la criptografía para el desarrollo de aplicaciones 
+  descentralizadas. No obstante, su propuesta de crear un lenguaje de scripting para Bitcoin, que hiciera esto posible, no tuvo resonancia 
+  suficiente. Fue entonces cuando se propuso el desarrollo de una red independiente, con su propia infraestructura, para el desarrollo de 
+  un criptoactivo y una cadena de bloques capaz de soportar aplicaciones descentralizadas. Y el 30 de julio de 2015, Vitalik conjuntamente
+  con otros programadores pusieron en línea la blockchain de Ethereum. \parencite{diaz2018}
+  
+  La red de Ethereum llevó a la práctica un nuevo concepto, los contratos inteligentes, en inglés conocidos como \textit{smart contracts}. 
+  La definición más simple al respecto es que se trata de contratos que tienen la capacidad de cumplirse de forma automática una vez que 
+  las partes han acordado los términos. Su nombre hace recordar a los contratos legales firmados en papel. Pero a pesar de que tienen 
+  cosas en común, son totalmente diferentes. 
+
+  Los contratos inteligentes son programas informáticos. No están escritos en lenguaje natural, sino en código virtual. Son un 
+  tipo de software que se programa, como cualquier otro software, para llevar a cabo una tarea o serie de tareas determinadas de acuerdo a 
+  las instrucciones previamente introducidas. Su cumplimiento, por tanto, no está sujeto a la interpretación de ninguna de las partes: si 
+  el evento A sucede, entonces la consecuencia B se pondrá en marcha de forma automática. Su implicación legal ha caído -como toda la 
+  tecnología relacionada a Bitcoin- en una zona gris. No se requiere de ningún intermediario de confianza (como una notaría), pues este 
+  papel lo adopta el código informático, que asegurará sin dudas el cumplimiento de las condiciones. Por tanto, se reducen tiempo y costes 
+  significativamente. ~\parencite{smartcontract}
+
+  % A smart contract is a computer program or a transaction protocol that is intended to automatically execute, control or document legally 
+  % relevant events and actions according to the terms of a contract or an agreement.[1][2][3][4] The objectives of smart contracts are the 
+  % reduction of need for trusted intermediators, arbitrations costs, fraud losses, as well as the reduction of malicious and accidental 
+  % exceptions.[5][2]
+
+  Las ventajas son obvias, y pueden reducirse a tres palabras: autonomía, seguridad y confianza. Utilizando contratos inteligentes ya no 
+  resulta necesario recurrir a un tercero —como un abogado o un notario—, que además de que pueden provocar errores, ocasiona gastos 
+  significativos. La blockchain es capaz de resguardar la información en una red cifrada que puede consultarse desde cualquier lugar del 
+  mundo, por lo que la velocidad y seguridad saltan a la vista.
+
+  Con esta nueva tecnología se puede crear una gran cantidad de nuevas aplicaciones para hacer trámites y transacciones hasta ahora
+  difíciles de realizar con las tecnologías existentes, o simplemente mejorar servicios gracias a la descentralización
+  de la blockchain y de los contratos inteligentes.
+
+  Una de estas aplicaciones de los contratos inteligentes está dada a las subastas. Una subasta es una venta generalmente pública en la 
+  que se adjudica una cosa, especialmente bienes o cosas de valor, a la persona que ofrece más dinero por ella. La blockchain puede y 
+  está cambiando, la manera en la que se hacen las subastas, ya sin necesidad de un subastador o de alguna entidad que haga de mediador. 
+  Ya muchas casas de apuestas han actualizado sus políticas, para adaptarse a los nuevos métodos, de hacer subastas. 
+  % https://tezro.com/
+  % https://bitify.com/
+  % https://nft.christies.com/  Founded in 1766, Christie’s is a world-leading art and luxury business.
+  % https://portion.io/     Portion is the premier online marketplace connecting artists and collectors through Blockchain technology to 
+  % easily sell, invest and own art and collectibles with complete transparency.
+  % https://www.coindesk.com/markets/2021/07/09/sothebys-sells-rare-diamond-for-123m-in-crypto/
+
+  Los mercados de deuda pública o de bonos soberanos(o del estado) siempre han hecho uso de subastas para hacer sus ventas. Con la
+  blockchain se abre una nueva puerta para una forma segura, eficiente y sencilla de efectuar estas subastas. 
+
+  Específicamente, en el presente trabajo se estudian las subastas a ciegas. Una subasta a ciegas es aquella en la que solo el ofertante 
+  sabe el monto de su oferta y nadie más. Él no conoce las ofertas de los demás y viceversa.
+
+  La implementación de subastas a ciegas sobre blockchain presupone una dificultad, pues toda información que se almacena es pública y 
+  verificable por cualquiera que esté conectado a la red de nodos. La solución a esto podría ser el cifrado de las ofertas que hacen 
+  los pujadores. Por tanto, el problema consiste en la selección del algoritmo adecuado para el desarrollo de un sistema de 
+  subasta a ciegas sobre Quorum.
+
+  El \textbf{objetivo} general de este trabajo es el diseño e implementación de un conjunto de algoritmos que permita el desarrollo de 
+  subastas a ciegas sobre Quorum. Quorum es una blockchain basada en Ethereum.
+
+  Para lograr el objetivo general se definen los siguientes objetivos específicos:
+
+  \begin{enumerate}
+    \item Identificar las soluciones técnicas y tecnologías que se emplean para el desarrollo de aplicaciones relacionadas 
+    con subasta electrónica.
+
+    \item Valorar las posibilidades de Quorum como plataforma para el desarrollo de aplicaciones de este tipo.
+
+    \item Estudio de Solidity como lenguaje de programación para el desarrollo de contratos inteligentes sobre Quorum.
+
+    \item Implementar contratos inteligentes (algoritmos) que permitan efectuar subastas a ciegas.
+
+  \end{enumerate}
+
+  La memoria escrita está organizada en 3 Capítulos.
+  En el Capítulo 1 se aborda el tema de las subastas, qué beneficios presenta la blockchain para el desarrollo de subastas y 
+  una comparación entre algunos tipos de protocolos de subastas a ciegas sobre blockchain. En el Capítulo 2 se explica la 
+  utilización de la blockchain de Quorum para el desarrollo de un sistema de subastas a ciegas. El Capítulo 3 está dedicado a la 
+  evaluación de los resultados y mostrar el desempeño del método propuesto. Finalmente, se dan las conclusiones de la investigación, 
+  recomendaciones, así como la bibliografía y los anexos necesarios para la mejor comprensión de la propuesta.

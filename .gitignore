@@ -1,3 +1,6 @@
+# my gitignore
+.directory
+
 # Logs
 logs
 *.log
