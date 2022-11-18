@@ -1,5 +1,8 @@
 # my gitignore
 .directory
+contracts/heap.sol
+contracts/blindAuction_original.sol
+contracts/quickSort_original1.sol
 
 # Logs
 logs
