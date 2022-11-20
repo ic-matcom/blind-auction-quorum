@@ -253,7 +253,7 @@
 % 40
 % efficient techniques. It only mentions secure multi-party computation as
 % a tentative way to replace the trusted auction manager, rejecting it as
-% impractical. \cite{sanchez2020}
+% impractical. \parencite{sanchez2020}
 
     - \cite{blass2017strain}: presenta Strain, un protocolo para construir una subasta de puja sellada sobre
     una blockchain, preservando la privacidad de las ofertas contra partes maliciosas. Se utiliza un tablón
@@ -270,16 +270,16 @@
 % that the participants used the original bids under commitment and that the auctioneer
 % declared the winner without manipulation. The malicious participant is punished by
 % opening their commitment as their private key is partly shared among all participants
-% through a distributed key generation process. \cite{sharma2021}
+% through a distributed key generation process. \parencite{sharma2021}
 
 
     - \cite{galalyusef2018a}: Galal y Youssef propusieron una subasta de puja sellada en la \textit{blockchain} Ethereum con contrato 
     inteligente y pruebas de conocimiento cero (\textit{zero-knowledge proofs}). Ofertantes envían sus pujas al contrato inteligente usando
-    \textit{Pedersen commitment} \cite{pedersen1991}. Los compromisos (\texit{commitments}) son secretamente revelados al subastador vía
+    \textit{Pedersen commitment} \parencite{pedersen1991}. Los compromisos (\texit{commitments}) son secretamente revelados al subastador vía
     un esquema \textit{Public Key Encryption (PKE)}. Después de declarar el ganador, por cada oferta perdedora, el subastador tiene que
     participar en un conjunto de protocolos interactivos de compromiso-desafío-verificación para demostrar que la puja ganadora es mayor que 
     las pujas perdedoras y como consecuencia, la complejidad de la interacción depende del número de ofertantes. Luego 
-    \cite{galalyusef2018b} mejoraron este protocolo presentando un contrato inteligente con una verificablemente concisa \textit{ZKP}
+    \parencite{galalyusef2018b} mejoraron este protocolo presentando un contrato inteligente con una verificablemente concisa \textit{ZKP}
     que permite una sola prueba de verificación para todo el proceso de la subasta. Similar a Zcash, ellos emplearon \textit{Multi-Party 
     Computation (MPC)} entre el subastador y pujantes. El esquema propuesto implementa la validez, imparcialidad
     y secreto de las transacciones en la subasta. Sin embargo, depende de un subastador externo.
@@ -294,12 +294,12 @@
 % this protocol and presented a Smart Contract with succinctly verifiable ZKP which enables
 % single proof verification for the whole auction process. Similar to Zcash, they used MPC
 % among auctioneer and bidders to derive Common Reference String (CRS) during Zero-
-% Knowledge Succinct Non-interactive ARgument of Knowledge (zk-SNARK) set up. \cite{sharma2021}
+% Knowledge Succinct Non-interactive ARgument of Knowledge (zk-SNARK) set up. \parencite{sharma2021}
     
     % The proposed scheme
     % implements the validity, fairness, secrecy of the auction
     % transaction. However, the proposed scheme depended on the
-    % third-party auctioneer \cite{li2021}
+    % third-party auctioneer \parencite{li2021}
 
     - \cite{sanchez2020}: un contrato inteligente privado y verificable, se introduce como una combinación de \textit{Multi-Party 
     Computation} segura y \textit{Proof-carrying code} enfocada principalmente en garantizar la correctitud, privacidad y 
@@ -369,6 +369,10 @@
 
     3 - Precio ganador: todos los esquemas vistos basan sus algoritmos para encontrar un único ganador, la puja más alta. Sin embargo, para
     el problema en cuestión es posible y casi seguro que haya varios ganadores. Es necesario buscar una estrategia factible para este caso.
+    
+    4 - Oferta única: todos los protocolos anteriores solamente permiten una única puja, por cada participante
+    en la subasta, para el problema actual, es necesario que se puedan realizar varias ofertas, e incluso de
+    ser posible, retirar ofertas no deseadas.
 
 %     According to the above literature review, the related
 % studies still have some defects in sealed-bid auction schemes.

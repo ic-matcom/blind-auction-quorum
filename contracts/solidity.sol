@@ -6,10 +6,9 @@ struct BidID {
     uint id;
 }
 
-function sort(BidID[] storage arr) returns (BidID[] storage){
+function sort(BidID[] storage arr){
     if (arr.length > 1)
         quickSort(arr, 0, arr.length - 1);
-    return arr;
 }
 
 function compareLess(BidID memory a, BidID memory b) pure returns (bool) {
@@ -64,7 +63,6 @@ contract BlindAuction {
     bool public ended;
     
     mapping(address => Bid[]) public bids;
-    // mapping(uint => BidRevealed) public bidsRevealed;
     BidRevealed[] public bidsRevealed;
     BidID[] public bidsRevealedPercentID;
 
@@ -110,14 +108,8 @@ contract BlindAuction {
     }
 
     /// Place a blinded bid with `blindedBid` =
-    /// keccak256(abi.encodePacked(value, fake, secret)).
-    /// The sent ether is only refunded if the bid is correctly
-    /// revealed in the revealing phase. The bid is valid if the
-    /// ether sent together with the bid is at least "value" and
-    /// "fake" is not true. Setting "fake" to true and sending
-    /// not the exact amount are ways to hide the real bid but
-    /// still make the required deposit. The same address can
-    /// place multiple bids.
+    /// keccak256(abi.encodePacked(value, percent, secret)).
+    /// The same address can place multiple bids.
     function bid(bytes32 blindedBid)
         external
         payable
@@ -128,8 +120,6 @@ contract BlindAuction {
             deposit: msg.value
         }));
     }
-
-    
 
     /// Reveal your blinded bids. You will get a refund for all
     /// correctly blinded invalid bids and for all bids except for
@@ -151,22 +141,25 @@ contract BlindAuction {
         uint length = bids[msg.sender].length;
         require(values.length == length);
         require(percents.length == length);
-        // require(fakes.length == length);
         require(secrets.length == length);
 
         for (uint i = 0; i < length; i++) {
             Bid storage bidToCheck = bids[msg.sender][i];
+
+            // Its offers have already been previously revealed
+            if(bidToCheck.blindedBid == bytes32(0)){
+                return;
+            }
+            pendingReturns[msg.sender] += bidToCheck.deposit;
+
             (uint value, uint percent, bytes32 secret) =
               (values[i], percents[i], secrets[i]);
-            pendingReturns[msg.sender] += bidToCheck.deposit;
             if (bidToCheck.blindedBid != keccak256(abi.encodePacked(value, percent, secret))) {
                 // Bid was not actually revealed.
-                // Do not refund deposit.
                 bidToCheck.blindedBid = bytes32(0);
                 continue;
             }
             if (pendingReturns[msg.sender] >= value) {
-                // if (placeBid(msg.sender, value))
                 uint _id = bidsRevealed.length;
                 bidsRevealed.push(BidRevealed({
                   addressBidder : msg.sender,
@@ -185,22 +178,21 @@ contract BlindAuction {
         }
     }
 
-    /// Withdraw a bid that was overbid.
+    /// Withdraw a bids invalid and not winning bids.
     function withdraw() external {
         uint amount = pendingReturns[msg.sender];
         if (amount > 0) {
             // It is important to set this to zero because the recipient
             // can call this function again as part of the receiving call
-            // before `transfer` returns (see the remark above about
-            // conditions -> effects -> interaction).
+            // before `transfer` returns (we implement a conditions → actions (effects) 
+            // → interaction design pattern that prevents such unwanted behavior.).
             pendingReturns[msg.sender] = 0;
 
             payable(msg.sender).transfer(amount);
         }
     }
 
-    /// End the auction and send the highest bid
-    /// to the beneficiary.
+    /// End the auction and send transaction to the beneficiary.
     function auctionEnd()
         external
         onlyAfter(revealEnd)
@@ -209,7 +201,7 @@ contract BlindAuction {
 
         // sort bids and choose winners
 
-        bidsRevealedPercentID = sort(bidsRevealedPercentID);
+        sort(bidsRevealedPercentID);
 
         BidRevealed[] memory winnersAuction;
 
@@ -236,11 +228,6 @@ contract BlindAuction {
                 }
 
                 sumBids += bidActual.amount;
-                // winnersAuction.push(BidRevealed({
-                //   addressBidder : bidActual.addressBidder,
-                //   amount : bidActual.amount,
-                //   percent : bidActual.percent
-                // }));
             }
             else{
                 pendingReturns[bidActual.addressBidder] += bidActual.amount;
@@ -249,7 +236,7 @@ contract BlindAuction {
         emit AuctionEnded(winnersAuction, percentToPay);
 
         ended = true;
-        // beneficiary.transfer(highestBid);
+        beneficiary.transfer(sumBids);
     }
 
 }

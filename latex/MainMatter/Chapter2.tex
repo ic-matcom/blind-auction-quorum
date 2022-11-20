@@ -1,1 +1,238 @@
 \chapter{Propuesta}\label{chapter:proposal}
+
+  En este capítulo se describirá el algoritmo implementado para ejecutar una variante de subasta holandesa
+a ciegas sobre blockchain, en este caso para una red blockchain basada en Ethereum, programada en el 
+lenguaje de programación solidity. Este algoritmo se hace con la finalidad de facilitar y realizar de manera
+segura la venta de bonos soberanos para el mercado de deuda pública. 
+
+  \section{Ventajas de la propuesta implementada}
+    Dado que los esquemas y protocolos para subastas a ciegas de la literatura consultada no cumplen con los requerimientos necesarios
+    para resolver el problema en cuestión (subasta a ciegas de bonos soberanos) o se hace difícil su adaptación al problema a resolver.
+    Se propone una solución que se adapta a las necesidades del problema y que además es escalable, segura y confiable.
+
+    Ventajas
+
+    \begin{enumerate}
+      \item No es necesario que los participantes de la subasta se registren en esta, para participar solamente necesitan hacer dos 
+      transacciones, la oferta y luego la revelación de la oferta.
+      \item Posibilidad de hacer varias ofertas. Cada participante o postor de la subasta puede realizar cuantas ofertas estime convenientes,
+      no tiene limitantes en cuanto al número de ofertas.
+      \item Permite retractar o cancelar ofertas. En la fase de revelación el usuario puede decidir no proceder con una oferta.
+      \item Admite múltiples ganadores. Los bonos se reparten entre los ganadores de la subasta, que en la mayoría de los casos será más 
+      de uno. 
+    \end{enumerate}
+
+    Desventajas:
+  
+    \begin{enumerate}
+      \item Las ofertas son reveladas. Las ofertas, si bien en la fase de ofertas son desconocidas, es necesario revelar la información
+      real de la oferta para comprobar su validez.
+      \item Posibilidad de colisión. Al utilizar un algoritmo de \textit{hash} para codificar las ofertas, existe la posibilidad (aunque bastante
+      poco probable) de que la información de dos ofertas diferentes, den el mismo \textit{hash}. 
+    \end{enumerate}
+
+    Teniendo en consideración las ventajas y desventajas anteriormente mencionadas, el autor cree que las desventajas no representan un
+    problema tan significativo, dado que la seguridad y confiabilidad de la subasta se mantienen en un nivel alto. Y, por el contrario, tiene
+    ventajas muy beneficiosas para resolver la problemática, incluso alguna de ellas no vistas en los esquemas de subasta que se han 
+    investigado con anterioridad.
+
+    \section{Condiciones iniciales}
+    Para mejor entendimiento del lector y lograr ser más específicos en algunos asuntos, la propuesta estará enfocada a la blockchain de
+    Ethereum, y todo lo que se refiera a la implementación e interacción del contrato inteligente a partir de ahora, va a estar enfocada
+    a esta blockchain en particular. A pesar de esto, la propuesta implementada se podrá utilizar en la red de Quorum o en otras redes basadas
+    en Ethereum sin ninguna o muy pocas modificaciones.
+
+    Para participar en la subasta como postor solo es necesario tener una cuenta en la blockchain de Ethereum, la aplicación o extensión
+    Metamask (o alguna otra que permita interactuar con contratos inteligentes) y una cantidad de ether suficiente para pagar la comisión
+    de gas de las transacciones.
+
+    \section{Proceso de Subasta}
+    El proceso de la subasta va a estar compuesto por 5 fases principales: despliegue, ofertas, revelación,
+    verificación y finalización.
+
+    Para mejor entendimiento, a partir de este momento al que oferta los bienes a subastar (en este caso los bonos) se le llamara 
+    beneficiario (para el problema en cuestión sería el gobierno), al que despliega el contrato inteligente en la blockchain le llamaremos 
+    subastador (a pesar de que no cumple el mismo objetivo ni funciona como los subastadores tradicionales). El beneficiario y el 
+    subastador pueden ser el mismo o personas diferentes. Por último, a los participantes en la subasta, se les llamará postores. 
+    Beneficiario, subastador y postores van a ser los usuarios de la subasta para mayor comodidad.
+
+    \subsection{Desplegar contrato}
+      El contrato inteligente puede ser desplegado a la blockchain por el propietario de lo que se oferta
+      o por una tercera persona que haga función de subastador. Esta persona no tiene ningún poder, ni ningún
+      privilegio en el contrato inteligente, ni tampoco tiene acceso a retirar los activos del contrato. La única función del subastador 
+      es la de poner los parámetros iniciales de esta, dígase: 
+    
+      \begin{enumerate}
+        \item boneToSale: valor total de los bonos que se quieren vender
+        \item biddingTime: tiempo de duración de la fase de ofertas
+        \item revealTime: tiempo de duración de la fase de revelación de ofertas
+        \item beneficiaryAddress: dirección donde se quiere recibir el pago de los bonos vendidos.
+      \end{enumerate}
+
+      Cada vez que se quiere hacer una nueva venta de bonos, es necesario volver a desplegar el contrato inteligente.
+
+    \subsection{Fase de ofertas}
+      Cada postor, puede realizar cuantas ofertas estime convenientes. Dado que lo que se oferta en la subasta son 
+      bonos, que como se explicó anteriormente, son una especie de préstamos por tiempo definido que se le hace al gobierno; cada puja está
+      compuesta de dos partes, la cantidad que el postor está dispuesto a prestar y cual sería el interés a cobrar por ese préstamo en 
+      porciento. 
+
+      Dada la necesidad de que las ofertas no sean conocidas por los demás postores, luego de escoger las condiciones de la oferta a 
+      efectuar, 
+      en vez de enviar los datos reales de esta, el postor codifica esa información (cantidad y porciento) en conjunto con una clave
+      privada solo conocida por él, y está codificación es lo que se envía al contrato inteligente. Es importante destacar que la cantidad
+      enviada en la transacción, en conjunto con la codificación de la oferta, no tiene que ser necesariamente la cantidad exacta de la 
+      oferta enviada, esta cantidad se deposita en el contrato inteligente y se añade al saldo de esa dirección en el contrato, para un 
+      posible uso posterior de este en ofertas venideras.
+
+      Para codificar la oferta se hace uso de la función de solidity: \textit{keccak256}, la cual es un algoritmo o función de 
+      \textit{hash} que toma como entrada un conjunto de datos y devuelve un valor de longitud fija, 32 bytes. 
+      Esta función es una de las más utilizadas en la programación de contratos inteligentes, ya que permite la creación de 
+      \textit{hash} de datos que no pueden ser revertidos a su valor original, es decir, que no se puede obtener la información original
+      de un \textit{hash} de esta función. Esta función es empleada para codificar la oferta, por el hecho de que al ser una función de hash,
+      no se puede obtener la información original de la oferta, por lo que no se puede saber la cantidad y el porciento de la oferta
+      que se realizó.
+
+      Luego de desplegado el contrato inteligente hay un tiempo hábil para mandar ofertas, luego de ese tiempo no serán recibidas más 
+      ofertas. Y da inicio a la fase de revelación de ofertas.
+
+      \subsection{Revelación de ofertas}
+      Cada postor que realizó ofertas debe enviar al contrato la información de las ofertas que quiere revelar. Es decir, tiene que enviar
+      tres arreglos, que van a representar valor, porciento y clave secreta de las ofertas, respectivamente. Es necesario que los tamaños
+      de los arreglos sean igual a la cantidad de ofertas enviadas, de lo contrario, no serán analizados, y será necesario una nueva 
+      transacción con la información completa. La posición del arreglo 
+      significa el número de la oferta, ordenada por tiempo de recepción de la oferta por el contrato inteligente. El contrato inteligente 
+      se encarga de codificar la información suministrada, con la misma función \textit{keccak256} que fue utilizada por el postor y la 
+      comprueba con la codificación enviada por este en la fase de ofertas. Si las dos codificaciones coinciden exactamente, quiere decir, 
+      que los datos de la oferta son los mismos que el postor eligió en la fase de ofertas y la oferta se considera válida. Para que la
+      oferta sea totalmente válida, es necesario que el valor depositado hasta ese momento en el contrato sea mayor que el valor de la
+      puja de esa transacción. A cada oferta válida se le asigna un identificador único (id), por orden de revelación (las ofertas que 
+      primero se revelan tienen un menor id), que posteriormente será usado.
+
+      Si la oferta no es válida, ya sea por no coincidir los valores \textit{hash} de las codificaciones o por no tener suficiente 
+      dinero disponible para ejecutar la oferta, se anula la oferta, sin embargo, el dinero depositado en esa transacción queda disponible
+      para próximas ofertas, aunque también disponible para retirar en cualquier momento posterior. Cuando se solicita un retiro 
+      (\tetxit{withdraw}) del contrato, si la dirección que lo solicita tiene algún fondo disponible para retiro, pues recibe el reembolso
+      de todo lo disponible en el contrato.
+
+      Es necesario destacar que la revelación de las ofertas ocurre solamente una única vez por cada dirección, es decir, si una oferta
+      es considerada válida o no válida (por alguna de las razones vistas anteriormente) pues no hay forma de cambiar ese veredicto. Por 
+      esto es necesario tener sumo cuidado con la información que se envía al contrato inteligente tanto en la fase de ofertas, como en
+      la fase de revelación, ya que una vez que se envía, no hay forma de cambiarla.
+
+    \subsection{Verificación y publicación de los ganadores}
+      En esta fase, se comprueban cuáles son los ganadores de la subasta, y se publican los resultados. Para esto, ya se tienen las ofertas
+      válidas, determinadas por la fase de revelación, estas se ordenan crecientemente por el porciento de interés que ofrecen, es decir
+      las que menor porciento de interés tiene el préstamo van primero, dado que son las más convenientes para el deudor. En caso de tener
+      el mismo porciento se desempata por la oferta con menor id. 
+
+      Luego de ordenadas las ofertas, se comienzan a aceptar ofertas hasta lograr la cantidad total que se necesita para cubrir el valor
+      de los bonos ofertados. Para esto, se comienza con la oferta con menor porciento de interés, 
+      y se acepta la oferta, es decir, disminuye la cantidad de bonos ofertados. Luego se pasa a la siguiente oferta, y se acepta la oferta, 
+      y así sucesivamente hasta que se agoten los bonos ofertados o hasta agotar todas las ofertas válidas.
+
+      Se paga un único porciento de interés a todos los ganadores de la subasta, el cual es el porciento de interés de la última oferta
+      aceptada, es decir, la oferta aceptada con mayor porciento de interés.
+
+      En caso de que para un porciento de interés se tengan varias ofertas con ese mismo porciento, se acepta primero la oferta con menor 
+      id. Por consiguiente, si en el último porciento de interés aceptado se tienen varias ofertas, el desempate está dado por el tiempo
+      de revelación de la oferta (que es lo que determina el id de la oferta). Esto estimula a los postores a revelar sus ofertas lo más
+      pronto posible, para tener una mayor probabilidad de estar entre los ganadores la subasta.
+
+      En caso de que la última oferta aceptada sobrepase la cantidad de bonos ofertados, se acepta la oferta parcialmente, es decir, se
+      acepta solamente la cantidad que se necesita para cubrir el valor de los bonos ofertados.
+
+      Luego de que ya se tienen las ofertas ganadoras, el dinero bloqueado de las ofertas restantes (si quedara alguna) es puesto a 
+      disposición de sus respectivos postores, para que puedan retirarlo.
+
+      \subsection{Finalización}
+      Esta fase está estrechamente ligada con la anterior, y se hacen una a continuación de la otra. Pero para mejor entendimiento se 
+      puso en una fase aparte. En esta fase, se publican los resultados de la subasta, es decir, se publican las ofertas ganadoras
+      (dirección, porciento y cantidad a prestar de cada una). Además, se publica el porciento de interés que se le pagará a los ganadores.
+      Y seguidamente se transfiere el dinero de los postores ganadores, en este caso convertidos en prestamistas, a la dirección del 
+      beneficiario de la subasta, que sería el deudor de los préstamos.
+
+      Por último el contrato inteligente activa una bandera que indica que la subasta ya ha finalizado, y que no se pueden hacer más
+      ofertas, ni revelaciones, ni nada relacionado con la subasta, solamente retiros del dinero de los postores que tengan dinero disponible.
+
+      El contrato fue diseñado para subasta de bonos soberanos, pero puede ser empleado para cualquier otra subasta del mercado de deuda.
+      Y también puede ser fácilmente adaptado para realizar otro tipo de subastas.
+
+  \section{Seguridad}
+    \subsection{Obligación de pago del beneficiario}
+      En la implementación realizada, se asume la fiabilidad del beneficiario de la subasta, a la postre deudor. No se llega a implementar
+      ninguna medida para asegurar el pago a los prestamistas, dado que depende mucho de las condiciones de la subasta y se escapa un poco
+      del alcance que pudiera tener el contrato inteligente, sin embargo, se 
+      propondrán algunas propuestas, que pudieran ser empleadas para garantizar o al menos mejorar la confianza de los postores hacia
+      el beneficiario.
+
+      \begin{enumerate}
+        \item El beneficiario tenga que depositar algún activo como colateral en el contrato inteligente, que sea igual al valor total o al menos
+        a los intereses a pagar por los bonos que
+        se ofertan. De esta manera, si el beneficiario no paga, el contrato inteligente puede pagar a los prestamistas con el dinero
+        depositado por el beneficiario.
+        \item Liberación de fondos en partes. En lugar de liberar el dinero de los prestamistas al final de la subasta, se puede liberar el 
+        dinero de los prestamistas en partes, es decir, liberar el dinero de los prestamistas en partes, proporcionalmente a los intereses 
+        que se
+        van pagando. De esta manera, si el beneficiario no paga, el contrato inteligente puede pagar a los prestamistas con el dinero
+        congelado en el contrato inteligente.
+        \item Tokenizar los bonos. En lugar de ofertar los bonos, se puede ofertar tokens que representen los bonos. De esta manera, estos
+        tokens servirían como garantía de que el beneficiario pagará los intereses de los bonos. Quizás hasta se podrían legalizar estos
+        tokens, de manera de que se pudieran incurrir en acciones legales en caso de que el beneficiario no pague los intereses de los
+        bonos o la devolución total  del préstamo luego del vencimiento de este. Estos tokens pudieran también servir para que los prestamistas
+        puedan vender sus tokens en el mercado secundario, y así recuperar parte de su dinero invertido. Creando así un mercado secundario
+        para los bonos, que es algo que no existe en el mercado de deuda cubano actualmente y que fomentaría la liquidez de los bonos y el
+        interés de los inversores en estos.
+      \end{enumerate}
+
+      El autor opina que cada una de estas opciones puede ser viable en algún caso particular, sin embargo, piensa que la mejor y más 
+      conveniente opción 
+      es la tercera, ya que es la que mejor garantiza el pago de los intereses y la devolución del préstamo, y además, tiene múltiples
+      beneficios adicionales, para los prestamistas y el mercado de deuda cubano en general.
+
+    \subsection{Keccak256}
+      Keccak está basada en una novedosa propuesta llamada construcción de esponja. La construcción de esponja está basada en una amplia
+      función aleatoria o permutación aleatoria, y permite la entrada (“absorber” metafóricamente en terminología de esponja) de cualquier 
+      cantidad de datos,
+      y la salida (“exprimir”) cualquier cantidad de datos, mientras actúa como una función pseudoaleatoria con respecto a todas las entradas
+      anteriores. Esto provoca una gran flexibilidad. \parencite{bertoni2007}
+
+      El algoritmo Keccak es el trabajo de Guido Bertoni, Joan Daemen, Michael Peeters y Gilles Van Assche. Está basado en los diseños de 
+      hash PANAMA y RadioGatún. En el año 2006 el \textit{National Institute of Standards and Technology} (NIST) organizó una nueva edición de la competición para la creación de una nueva función 
+      para los estándares de Secure Hash Algorithm (SHA), el SHA-3. Al no existir un ataque significativo demostrado en SHA-2, el nuevo 
+      estándar SHA-3 no lo reemplazará. La NIST ha mencionado que debido a exitosos ataques a los estándares MD5, SHA-0 y SHA-1, es 
+      necesario una alternativa llamada SHA-3. \parencite{stevens2017}
+
+      Las admisiones de proyectos comenzaron en el año 2008. Keccak fue aceptado como uno de los 51 candidatos. En julio de 2009, 14 
+      algoritmos pasaron a la segunda ronda y Keccak avanzó a la ronda final en diciembre de 2010. Durante el periodo de la competición, se 
+      les permitió a los participantes corregir problemas descubiertos en sus algoritmos. Keccak hizo algunos cambios como el número de 
+      rondas, se amplió de ${\displaystyle 12-\ell}$ a ${\displaystyle 12-2\ell }$. En 
+      octubre de 2012 fue seleccionado como el ganador de la competición. En el año 2014 la NIST publicó la documentación técnica del 
+      algoritmo y fue aprobado en agosto de 2015, para así convertirse en el nuevo estándar SHA-3. \parencite{nist2015}
+
+      En el caso de Bitcoin, el uso del algoritmo de hash SHA256 está bastante extendido,
+      además es utilizado en multitud de implementación de funcionalidades de la cadena
+      de bloques de Bitcoin. En cambio, Ethereum hace uso del algoritmo de hash Keccak-
+      256, aprobado por la NIST en agosto del 2015, convirtiéndose en el nuevo estándar
+      SHA-3.
+      Cabe destacar que debido a que la aprobación por parte del NIST de este algoritmo fue más tardía que el desarrollo de Ethereum, el 
+      estándar final de SHA-3 adoptado por
+      la NIST hace referencia al estándar “FIPS-202 SHA-3”, el cual sufrió ligeros cambios
+      en sus parámetros a diferencia del algoritmo Keccak-256 implementado en Ethereum.
+
+      \begin{verbatim}
+        Keccak256("")
+        = c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470
+
+        SHA3("")
+        = a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a
+      \end{verbatim}
+
+      Como se produjeron ligeros cambios, las salidas de estos algoritmos no son iguales
+      entre sí en el caso de que haya entradas iguales. Para comprobarlo, como se hace en
+      el ejemplo anterior, se puede observar los valores en ambos casos de uno entrada vacía, lo
+      que da como resultado dos salidas distintas. Por lo tanto, a pesar de que en múltiples
+      papers y documentos de Ethereum se haga referencia a SHA-3, realmente se quiere
+      hacer referencia al uso de Keccak-256. \parencite{taibo2022}
+
+      % other post: https://www.geeksforgeeks.org/difference-between-sha-256-and-keccak-256/
