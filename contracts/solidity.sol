@@ -121,6 +121,11 @@ contract BlindAuction {
         }));
     }
 
+    function blind_a_bid(uint value, uint percent, bytes32 secret) 
+      public pure returns (bytes32){
+        return keccak256(abi.encodePacked(value, percent, secret));
+    }
+
     /// Reveal your blinded bids. You will get a refund for all
     /// correctly blinded invalid bids and for all bids except for
     /// the winners bids.
@@ -154,7 +159,7 @@ contract BlindAuction {
 
             (uint value, uint percent, bytes32 secret) =
               (values[i], percents[i], secrets[i]);
-            if (bidToCheck.blindedBid != keccak256(abi.encodePacked(value, percent, secret))) {
+            if (bidToCheck.blindedBid != blind_a_bid(value, percent, secret)) {
                 // Bid was not actually revealed.
                 bidToCheck.blindedBid = bytes32(0);
                 continue;
