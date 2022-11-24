@@ -1,44 +1,46 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.4;
 
-struct BidID {
-    uint percent;
-    uint id;
-}
-
-function sort(BidID[] storage arr){
-    if (arr.length > 1)
-        quickSort(arr, 0, arr.length - 1);
-}
-
-function compareLess(BidID memory a, BidID memory b) pure returns (bool) {
-    if(a.percent == b.percent)
-        return a.id < b.id;
-    return a.percent < b.percent;
-}
-
-function quickSort(BidID[] memory arr, uint left, uint right){
-    if (left >= right)
-        return;
-    BidID memory p = arr[(left + right) / 2];   // p = the pivot element
-    uint i = left;
-    uint j = right;
-    while (i < j) {
-        while (compareLess(arr[i],p)) ++i;
-        while (compareLess(p,arr[j])) --j;         // arr[j] > p means p still to the left, so j > 0
-        if (compareLess(arr[j],arr[i]))
-            (arr[i], arr[j]) = (arr[j], arr[i]);
-        else
-            ++i;
+contract BlindAuction{
+    struct BidID {
+        uint percent;
+        uint id;
     }
 
-    // Note --j was only done when a[j] > p.  So we know: a[j] == p, a[<j] <= p, a[>j] > p
-    if (j > left)
-        quickSort(arr, left, j - 1);    // j > left, so j > 0
-    quickSort(arr, j + 1, right);
-}
+    function sort(BidID[] storage data) internal {
+        if(data.length > 1)
+            quickSort(data, int(0), int(data.length - 1));
+    }
+    
+    function compareLess(BidID memory a, BidID memory b) pure internal returns (bool) {
+        if(a.percent == b.percent)
+            return a.id < b.id;
+        return a.percent < b.percent;
+    }
 
-contract BlindAuction {
+    function quickSort(BidID[] storage arr, int left, int right) internal{
+        int i = left;
+        int j = right;
+        if(i==j) return;
+        BidID memory pivot = arr[uint(left + right / 2)];
+        BidID memory tmp;
+        while (i <= j) {
+            while (compareLess(arr[uint(i)],pivot)) i++;
+            while (compareLess(pivot,arr[uint(j)])) j--;
+            if (i <= j) {
+                tmp = arr[uint(j)];
+                arr[uint(j)] = arr[uint(i)];
+                arr[uint(i)] = tmp;
+                i++;
+                j--;
+            }
+        }
+        if (left < j)
+            quickSort(arr, left, j);
+        if (i < right)
+            quickSort(arr, i, right);
+    }
+
     struct Bid {
         bytes32 blindedBid;
         uint deposit;
@@ -49,12 +51,6 @@ contract BlindAuction {
         uint amount;
         uint percent;
     }
-
-    // struct BidID {
-    //     uint percent;
-    //     uint id;
-    // }
-
 
     address payable public beneficiary;
     uint public boneTotal;
@@ -138,11 +134,6 @@ contract BlindAuction {
         onlyAfter(biddingEnd)
         onlyBefore(revealEnd)
     {
-        bidsRevealed[0] = BidRevealed({
-            addressBidder: msg.sender,
-            amount: 0,
-            percent: 0
-        });
         uint length = bids[msg.sender].length;
         require(values.length == length);
         require(percents.length == length);
@@ -159,6 +150,7 @@ contract BlindAuction {
 
             (uint value, uint percent, bytes32 secret) =
               (values[i], percents[i], secrets[i]);
+
             if (bidToCheck.blindedBid != blind_a_bid(value, percent, secret)) {
                 // Bid was not actually revealed.
                 bidToCheck.blindedBid = bytes32(0);
@@ -205,17 +197,17 @@ contract BlindAuction {
         if (ended) revert AuctionEndAlreadyCalled();
 
         // sort bids and choose winners
-
         sort(bidsRevealedPercentID);
 
         BidRevealed[] memory winnersAuction;
 
-        uint percentToPay;
+        uint percentToPay = 10;
         uint sumBids = 0;
         uint length = bidsRevealedPercentID.length;
         for(uint i = 0;i < length;i++){
             BidRevealed storage bidActual = bidsRevealed[bidsRevealedPercentID[i].id];
             if(sumBids < boneTotal){
+                // require(false, "LLego");
                 if(sumBids + bidActual.amount >= boneTotal){
                     percentToPay = bidActual.percent;
 
@@ -226,7 +218,8 @@ contract BlindAuction {
 
                     winnersAuction = new BidRevealed[](i + 1);
 
-                    for(uint j = 0;j <= i + 1;j++){
+                    for(uint j = 0;j <= i;j++){
+                        require(j <= 0, "LLEGO");
                         BidRevealed storage bidAux = bidsRevealed[bidsRevealedPercentID[j].id];
                         winnersAuction[j] = BidRevealed(bidAux.addressBidder, uint256(bidAux.amount), uint256(bidAux.percent));
                     }
