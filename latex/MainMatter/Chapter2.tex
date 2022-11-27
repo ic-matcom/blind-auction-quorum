@@ -1,19 +1,19 @@
 \chapter{Propuesta}\label{chapter:proposal}
 
   En este capítulo se describirá el algoritmo implementado para ejecutar una variante de subasta holandesa
-a ciegas sobre blockchain, en este caso para una red blockchain basada en Ethereum, programada en el 
+a ciegas sobre \textit{blockchain}, en este caso para una red \textit{blockchain} basada en Ethereum, programada en el 
 lenguaje de programación solidity. Este algoritmo se hace con la finalidad de facilitar y realizar de manera
 segura la venta de bonos soberanos para el mercado de deuda pública. 
 
-  \section{Ventajas de la propuesta implementada}
-    Dado que los esquemas y protocolos para subastas a ciegas de la literatura consultada no cumplen con los requerimientos necesarios
+  \section{Ventajas de la propuesta}
+    Los esquemas y protocolos para subastas a ciegas de la literatura consultada no cumplen con los requerimientos necesarios
     para resolver el problema en cuestión (subasta a ciegas de bonos soberanos) o se hace difícil su adaptación al problema a resolver.
-    Se propone una solución que se adapta a las necesidades del problema y que además es escalable, segura y confiable.
+    Dado esto, se propone una solución que se adapta a las necesidades del problema y que además es escalable, segura y confiable.
 
     Ventajas
 
     \begin{enumerate}
-      \item No es necesario que los participantes de la subasta se registren en esta, para participar solamente necesitan hacer dos 
+      \item No es necesario que los participantes de la subasta se registren en esta. Para participar solamente necesitan hacer dos 
       transacciones, la oferta y luego la revelación de la oferta.
       \item Posibilidad de hacer varias ofertas. Cada participante o postor de la subasta puede realizar cuantas ofertas estime convenientes,
       no tiene limitantes en cuanto al número de ofertas.
@@ -22,7 +22,8 @@ segura la venta de bonos soberanos para el mercado de deuda pública.
       de uno. 
     \end{enumerate}
 
-    Desventajas:
+    A pesar de las ventajas de la propuesta, también se presentan algunas desventajas, las cuales se 
+    describen en el siguiente apartado. Desventajas:
   
     \begin{enumerate}
       \item Las ofertas son reveladas. Las ofertas, si bien en la fase de ofertas son desconocidas, es necesario revelar la información
@@ -37,27 +38,27 @@ segura la venta de bonos soberanos para el mercado de deuda pública.
     investigado con anterioridad.
 
     \section{Condiciones iniciales}
-    Para mejor entendimiento del lector y lograr ser más específicos en algunos asuntos, la propuesta estará enfocada a la blockchain de
+    Para mejor entendimiento del lector y lograr ser más específicos en algunos asuntos, la propuesta estará enfocada a la \textit{blockchain} de
     Ethereum, y todo lo que se refiera a la implementación e interacción del contrato inteligente a partir de ahora, va a estar enfocada
-    a esta blockchain en particular. A pesar de esto, la propuesta implementada se podrá utilizar en la red de Quorum o en otras redes basadas
+    a esta \textit{blockchain} en particular. A pesar de esto, la propuesta implementada se podrá utilizar en la red de Quorum o en otras redes basadas
     en Ethereum sin ninguna o muy pocas modificaciones.
 
-    Para participar en la subasta como postor solo es necesario tener una cuenta en la blockchain de Ethereum, la aplicación o extensión
+    Para participar en la subasta como postor solo es necesario tener una cuenta en la \textit{blockchain} de Ethereum, la aplicación o extensión
     Metamask (o alguna otra que permita interactuar con contratos inteligentes) y una cantidad de ether suficiente para pagar la comisión
     de gas de las transacciones.
 
     \section{Proceso de Subasta}
-    El proceso de la subasta va a estar compuesto por 5 fases principales: despliegue, ofertas, revelación,
+    El proceso de la subasta va a estar compuesto por cinco fases principales: despliegue, ofertas, revelación,
     verificación y finalización.
 
     Para mejor entendimiento, a partir de este momento al que oferta los bienes a subastar (en este caso los bonos) se le llamara 
-    beneficiario (para el problema en cuestión sería el gobierno), al que despliega el contrato inteligente en la blockchain le llamaremos 
+    beneficiario (para el problema en cuestión sería el gobierno), al que despliega el contrato inteligente en la \textit{blockchain} le llamaremos 
     subastador (a pesar de que no cumple el mismo objetivo ni funciona como los subastadores tradicionales). El beneficiario y el 
     subastador pueden ser el mismo o personas diferentes. Por último, a los participantes en la subasta, se les llamará postores. 
     Beneficiario, subastador y postores van a ser los usuarios de la subasta para mayor comodidad.
 
     \subsection{Desplegar contrato}
-      El contrato inteligente puede ser desplegado a la blockchain por el propietario de lo que se oferta
+      El contrato inteligente puede ser desplegado a la \textit{blockchain} por el propietario de lo que se oferta
       o por una tercera persona que haga función de subastador. Esta persona no tiene ningún poder, ni ningún
       privilegio en el contrato inteligente, ni tampoco tiene acceso a retirar los activos del contrato. La única función del subastador 
       es la de poner los parámetros iniciales de esta, dígase: 
@@ -112,7 +113,7 @@ segura la venta de bonos soberanos para el mercado de deuda pública.
       Si la oferta no es válida, ya sea por no coincidir los valores \textit{hash} de las codificaciones o por no tener suficiente 
       dinero disponible para ejecutar la oferta, se anula la oferta, sin embargo, el dinero depositado en esa transacción queda disponible
       para próximas ofertas, aunque también disponible para retirar en cualquier momento posterior. Cuando se solicita un retiro 
-      (\tetxit{withdraw}) del contrato, si la dirección que lo solicita tiene algún fondo disponible para retiro, pues recibe el reembolso
+      (\textit{withdraw}) del contrato, si la dirección que lo solicita tiene algún fondo disponible para retiro, pues recibe el reembolso
       de todo lo disponible en el contrato.
 
       Es necesario destacar que la revelación de las ofertas ocurre solamente una única vez por cada dirección, es decir, si una oferta
@@ -195,20 +196,20 @@ segura la venta de bonos soberanos para el mercado de deuda pública.
       función aleatoria o permutación aleatoria, y permite la entrada (“absorber” metafóricamente en terminología de esponja) de cualquier 
       cantidad de datos,
       y la salida (“exprimir”) cualquier cantidad de datos, mientras actúa como una función pseudoaleatoria con respecto a todas las entradas
-      anteriores. Esto provoca una gran flexibilidad. \parencite{bertoni2007}
+      anteriores. Esto provoca una gran flexibilidad \parencite{bertoni2007}.
 
       El algoritmo Keccak es el trabajo de Guido Bertoni, Joan Daemen, Michael Peeters y Gilles Van Assche. Está basado en los diseños de 
       hash PANAMA y RadioGatún. En el año 2006 el \textit{National Institute of Standards and Technology} (NIST) organizó una nueva edición de la competición para la creación de una nueva función 
       para los estándares de Secure Hash Algorithm (SHA), el SHA-3. Al no existir un ataque significativo demostrado en SHA-2, el nuevo 
       estándar SHA-3 no lo reemplazará. La NIST ha mencionado que debido a exitosos ataques a los estándares MD5, SHA-0 y SHA-1, es 
-      necesario una alternativa llamada SHA-3. \parencite{stevens2017}
+      necesario una alternativa llamada SHA-3 \parencite{stevens2017}.
 
       Las admisiones de proyectos comenzaron en el año 2008. Keccak fue aceptado como uno de los 51 candidatos. En julio de 2009, 14 
       algoritmos pasaron a la segunda ronda y Keccak avanzó a la ronda final en diciembre de 2010. Durante el periodo de la competición, se 
       les permitió a los participantes corregir problemas descubiertos en sus algoritmos. Keccak hizo algunos cambios como el número de 
       rondas, se amplió de ${\displaystyle 12-\ell}$ a ${\displaystyle 12-2\ell }$. En 
       octubre de 2012 fue seleccionado como el ganador de la competición. En el año 2014 la NIST publicó la documentación técnica del 
-      algoritmo y fue aprobado en agosto de 2015, para así convertirse en el nuevo estándar SHA-3. \parencite{nist2015}
+      algoritmo y fue aprobado en agosto de 2015, para así convertirse en el nuevo estándar SHA-3 \parencite{nist2015}.
 
       En el caso de Bitcoin, el uso del algoritmo de hash SHA256 está bastante extendido,
       además es utilizado en multitud de implementación de funcionalidades de la cadena
@@ -221,11 +222,11 @@ segura la venta de bonos soberanos para el mercado de deuda pública.
       en sus parámetros a diferencia del algoritmo Keccak-256 implementado en Ethereum.
 
       \begin{verbatim}
-        Keccak256("")
-        = c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470
+    Keccak256("")
+    = c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470
 
-        SHA3("")
-        = a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a
+    SHA3("")
+    = a7ffc6f8bf1ed76651c14756a061d662f580ff4de43b49fa82d80a4b80f8434a
       \end{verbatim}
 
       Como se produjeron ligeros cambios, las salidas de estos algoritmos no son iguales
@@ -233,6 +234,6 @@ segura la venta de bonos soberanos para el mercado de deuda pública.
       el ejemplo anterior, se puede observar los valores en ambos casos de uno entrada vacía, lo
       que da como resultado dos salidas distintas. Por lo tanto, a pesar de que en múltiples
       papers y documentos de Ethereum se haga referencia a SHA-3, realmente se quiere
-      hacer referencia al uso de Keccak-256. \parencite{taibo2022}
+      hacer referencia al uso de Keccak-256 \parencite{taibo2022}.
 
       % other post: https://www.geeksforgeeks.org/difference-between-sha-256-and-keccak-256/

@@ -1,3 +1,21 @@
 \begin{recomendations}
-    Recomendaciones
+    Luego de la investigación, la implementación y las pruebas realizadas en el presente trabajo. Se 
+    proponen algunas recomendaciones para analizar e investigar en futuros trabajos.
+
+    Se hace necesario un estudio profundo de los tipos de almacenamiento que admite Solidity y los tipos de
+    datos usados para implementar el algoritmo, para optimizar el uso de la memoria empleada por el algoritmo
+    propuesto, recurso muy costoso en las redes blockchain.
+
+    Se recomienda además la implementación de un \tectit{Heap} (Monticulo) en detrimento del Quick Sort,
+    para escoger las ofertas ganadoras de la subasta y hacer una comparación, para ver con cuál de los
+    dos algoritmos la fase de verificación de los ganadores utiliza menos gas, y por tanto, menos recursos.
+
+    Dado que las pruebas en la red blockchain local fueron satisfactorias, se recomienda el despliegue del
+    contrato implementado en la red de Quorum.
+
+    Por último, se hace necesario la implementación de un mecanismo para asegurar el cumplimiento del
+    beneficiario (ofertante de los bonos) de su parte en el acuerdo. La opción recomendada y más 
+    factible según el autor, es tokenizar los bonos, y darlos a los postores de las ofertas ganadoras,
+    en proporción a la cantidad de bonos comprados por este.
+
 \end{recomendations}

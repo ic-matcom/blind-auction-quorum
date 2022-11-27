@@ -1,3 +1,42 @@
 \begin{conclusions}
-    Conclusiones
+    Las subastas son un mecanismo de venta cada día más usado. Con el auge de las tecnologías de la 
+    información, sistemas de pago electrónico y de un mundo interconectado, a través de internet. Cada
+    vez se hace un mayor uso de subastas electrónicas. Por esta razón, se hace necesario protocolos y 
+    mecanismos para incrementar la seguridad de estos sistemas y protegerlos de hackers que explotan
+    vulnerabilidades de seguridad en las plataformas de subastas, pero también proteger a los usuarios
+    de subastadores malintencionados que pueden terminar siendo estafadores, este último problema cada
+    vez más latente en la actualidad.
+
+    La blockchain y los contratos inteligentes, surgen luego del 2015 y la aparición de la blockchain de 
+    Ethereum, como
+    una herramienta eficaz para hacer frente a estos problemas, poniendo a nuestra disposición la 
+    capacidad de crear transacciones y programas incorruptibles, que se mantienen públicos a la vista 
+    de todos, haciendo que algunos procesos antes oscuros y cerrados, sean ahora totalmente transparentes
+    y abiertos a cualquier persona.
+
+    Gracias a esta tecnología, surge la idea de crear subastas en la blockchain, aportándole así seguridad
+    y fiabilidad al proceso. Pero con esta total transparencia de la blockchain surgen algunas dificultades
+    para realizar algunos tipos de subasta. ¿Cómo lograr ejecutar una subasta a ciega, si toda la información
+    es pública?
+
+    En la literatura consultada se presentan varias propuestas, casi todas relacionadas directamente
+    con la criptografía para ocultar las ofertas de la subasta. En la propuesta implementada se utiliza con
+    este objetivo la función \textit{hash keccak256}, la cual es altamente probada y utilizada para 
+    proteger datos (en este caso ofertas de la subasta) de los demás usuarios de la subasta, incluyendo 
+    el subastador.
+
+    Para el desarrollo del contrato inteligente se utilizó el lenguaje Solidity, el cual es un lenguaje
+    especializado en la creación de contratos inteligentes específicamente creado para la red de 
+    Ethereum, pero que redes posteriormente creadas también han adoptado su uso.
+
+    A pesar de no haber llegado a desplegarse el contrato en la red de Quorum, el autor cree que las
+    características de esta red son ideales para desarrollar un contrato de este tipo. Como característica
+    a destacar es que las transacciones realizadas en esta red, al ser una red privada y no pública (como 
+    Ethereum) es que las transacciones son libres de costo, hecho que facilita la realización satisfactoria
+    de todos los procesos y transacciones que requiere el contrato inteligente propuesto.
+
+    Además, el contrato inteligente implementado, según las pruebas realizadas, necesita que la cantidad
+    de ofertas sean limitadas, para un correcto funcionamiento del algoritmo y el entorno de una red
+    privada como Quorum permite tener más control sobre eso, sin afectar la seguridad y cumplimiento
+    total de los procesos de la subasta en el contrato.
 \end{conclusions}

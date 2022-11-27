@@ -14,6 +14,8 @@
 \usepackage{xcolor}
 \usepackage{multicol}
 \usepackage{graphicx}
+% import .svg graphics
+\usepackage[clean]{svg}
 \floatstyle{plaintop}
 \restylefloat{table}
 \addbibresource{Bibliography.bib}
@@ -94,12 +96,12 @@
 \include{MainMatter/Introduction}
 \include{MainMatter/Chapter1}
 \include{MainMatter/Chapter2}
-% \include{MainMatter/Chapter3}
+\include{MainMatter/Chapter3}
 
 \backmatter
 
-% \include{BackMatter/Conclusions}
-% \include{BackMatter/Recomendations}
+\include{BackMatter/Conclusions}
+\include{BackMatter/Recomendations}
 \include{BackMatter/Bibliography}
 
 \end{document}
