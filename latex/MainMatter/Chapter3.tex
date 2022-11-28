@@ -30,7 +30,7 @@
     se prefirió el empleo del Quick Sort, por la sencillez de su implementación.
 
     \section{Experimentación}
-    \subsection{Tecnologías Utilizadas}
+    \subsection{Tecnologías utilizadas}
       El contrato inteligente que procesa la subasta fue programado en el lenguaje Solidity v0.8.4 
       \parencite{solidity0.8.4}. Y para las pruebas realizadas al contrato se utilizó Python 3.8.10 
       \parencite{python3.8} en conjunto con Brownie v1.19.2, este último es un framework basado en python
@@ -60,7 +60,6 @@
         Así solo nos queda una cosa, ¿Cuánto se pagará por ese Gas para poder llevar a cabo la operación en 
         Ethereum?
 
-
         En la analogía anterior la gasolina varía entre 1 y 1,5 €, se puede escoger donde repostar y pagar lo 
         menos 
         posible para adquirir los 50 litros de gasolina que se necesita para el viaje. Lo mismo pasa en 
@@ -69,9 +68,7 @@
         valor que se va a pagar por ese Gas, y si un minero está de acuerdo con ese valor, tomará la 
         transacción y la ejecutará.
 
-
         Hay tres cosas que son importantes y vitales dentro de Ethereum, y que explicamos a continuación:
-
 
         \begin{enumerate}
           \item Unidad de Gas. La Unidad de Gas es la cantidad de Gas que se puede atribuir a una instrucción 
@@ -101,7 +98,7 @@
           \centering
           \includegraphics[scale=0.4]{Graphics/gas.png}
           \caption{Diagrama donde se resume, el funcionamiento interno de un contrato inteligente}
-          \label{gas_auctionEnd}
+          \label{smart_contract_squeme}
         \end{figure}
 
         \subsubsection{Gas en Quorum}
@@ -196,7 +193,7 @@
         \begin{figure}
           \centering
           \includegraphics[scale=0.9]{Graphics/gas_reveal.pdf}
-          \caption{}
+          \caption{Gas usado por la función "reveal"}
           \label{gas_reveal}
         \end{figure} 
     
@@ -208,7 +205,7 @@
         \begin{figure}
           \centering
           \includegraphics[scale=0.9]{Graphics/gas_auctionEnd.pdf}
-          \caption{}
+          \caption{Gas usado por la función "auctionEnd"}
           \label{gas_auctionEnd}
         \end{figure} 
     

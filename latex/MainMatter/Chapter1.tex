@@ -235,7 +235,7 @@
     % blockchain como ConsenSys Quorum
     % https://www.coindesk.com/business/2020/08/25/consensys-acquires-jpmorgans-quorum-blockchain/
 
-  \subsection{Subastas a ciegas sobre \textit{blockchain}} \hspace*{}
+  \subsection{Subastas a ciegas sobre \textit{blockchain}}\label{section:blind_auction_protocols}
     Las subastas sobre \textit{blockchain} han sido una área centro de muchas investigaciones en los últimos años, razón por la cual ya se
     han investigado algunos protocolos de subastas a ciegas sobre \textit{blockchain}. Algunos de ellos son:    
 
@@ -277,9 +277,10 @@
     conocimientos de prueba cero (\textit{zero-knowledge proofs (ZKP)}) diferentes son empleadas; una 
     asegura que los 
     participantes usan sus ofertas originales, bajo compromiso, y la otra ZKP asegura que el
-    subastador declare el ganador, sin ninguna manipulación. Los participantes maliciosos son sancionados 
-    por abrir su compromiso, ya que su clave privada está parcialmente compartida entre todos los 
-    participantes a través de un proceso de generación distribuida de claves.
+    subastador declare el ganador, sin ninguna manipulación. 
+    Los participantes maliciosos son penalizados con la revelación de su propuesta, ya que su clave privada 
+    se comparte parcialmente entre todos los participantes a través de un proceso de generación distribuida
+    de claves.
 
     % Strain [11] presented a protocol to build a blockchain-based sealed-bid auction, preserving bid privacy 
     % against malicious parties. A bulletin board is used to publish the winning bid which is determined by 
@@ -321,13 +322,17 @@
     % transaction. However, the proposed scheme depended on the
     % third-party auctioneer \parencite{li2021}
 
-    - Sánchez (\citeyear{sanchez2020}) propone un contrato inteligente privado y verificable, se introduce como una combinación de \textit{Multi-Party 
-    Computation} segura y \textit{Proof-carrying code}\footnote{Es un mecanismo de software que permite que un sistema host verifique las 
-    propiedades de una aplicación a través de una prueba formal que acompaña al código ejecutable de la aplicación.} enfocada 
+    - Sánchez (\citeyear{sanchez2020}) propone un contrato inteligente privado y verificable, se introduce 
+    como una combinación de \textit{Multi-Party 
+    Computation} segura y \textit{Proof-carrying code}\footnote{Es un mecanismo de software que permite que 
+    un sistema host verifique las 
+    propiedades de una aplicación a través de una prueba formal que acompaña al código ejecutable de la 
+    aplicación.} enfocada 
     principalmente en garantizar la correctitud, privacidad y 
     verificabilidad para contratos inteligentes en la \textit{blockchain}. Este enfoque puede ser utilizado 
     para varios tipos de aplicaciones tales
-    como \textit{crowdfundings} privados y verificables, fondos de inversión y subastas dobles para intercambios descentralizados.
+    como \textit{crowdfundings} privados y verificables, fondos de inversión y subastas dobles para 
+    intercambios descentralizados.
 
 %     A
 % private and verifiable smart contract approach [10], introduced as a combination of secure
@@ -360,9 +365,9 @@
     - Li and Xue (\citeyear{li2021}) proponen un esquema de subasta electrónica de puja sellada basada en \textit{blockchain} con algoritmo de 
     compromiso, contratos inteligentes y \textit{zero-knowledge proof (ZKP)} para proteger la fuga de información de las pujas y verificar
     el resultado de la subasta con todos los ofertantes anónimamente, que implementa satisfactoriamente la seguridad y justicia de la 
-    subasta sin necesidad de un subastador externo. El esquema propuesto presenta limitaciones en cuanto al 
+    subasta sin necesidad de un subastador externo. El esquema sugerido presenta limitaciones en cuanto al 
     tiempo de corrida. El tiempo 
-    de  ejecución de dos de la fases, la fase abierta y fase final, está determinado por el número de 
+    de ejecución de dos de las fases, la fase abierta y fase final, está determinado por el número de 
     ofertantes. Esto significa que 
     la subasta se convertiría en un trabajo que consume mucho tiempo en el caso de ser usado en 
     plataformas abiertas como Internet.
@@ -385,8 +390,7 @@
 % -----------------------------------------------------------------------------------------
 
     De acuerdo a la revisión de la literatura hecha anteriormente, los estudios relacionados tienen algunos defectos para los 
-    esquemas de subasta de puja-sellada. Y en especial para el que se quiere implementar, una variación de la subasta holandesa con 
-    subasta a ciegas. En opinión del autor de esta investigación, tales dificultades serían:
+    esquemas de subasta de puja-sellada. En opinión del autor de esta investigación, tales dificultades serían:
 
     1 - Riesgo del modo de transacción centralizado: como se discutió anteriormente, en subastas 
     tradicionales todas las transacciones
@@ -398,13 +402,6 @@
     2 - Ocultación de precios incompleta: ocultar el precio de las pujas es el núcleo de las subastas de puja sellada. En la mayoría de los estudios 
     relacionados, el precio de la puja es protegido por encriptación. Sin embargo, en la fase abierta, el precio de la puja es desencriptado
     y directamente revelado por verificación, lo cual puede causar filtración de precios.
-
-    3 - Solamente un ganador: todos los esquemas vistos basan sus algoritmos para encontrar un único ganador, la puja más alta. Sin embargo, para
-    el problema en cuestión es posible y casi seguro que haya varios ganadores. Es necesario buscar una estrategia factible para este caso.
-    
-    4 - Posibilidad de solamente una oferta por participante: todos los protocolos anteriores solamente permiten una única puja, por cada participante
-    en la subasta, para el problema actual, es necesario que se puedan realizar varias ofertas, e incluso,
-    de ser posible, retirar ofertas no deseadas.
 
 %     According to the above literature review, the related
 % studies still have some defects in sealed-bid auction schemes.
