@@ -22,7 +22,7 @@ contract BlindAuction{
         int i = left;
         int j = right;
         if(i==j) return;
-        BidID memory pivot = arr[uint(left + right / 2)];
+        BidID memory pivot = arr[uint(left + right) / 2];
         BidID memory tmp;
         while (i <= j) {
             while (compareLess(arr[uint(i)],pivot)) i++;
@@ -57,7 +57,7 @@ contract BlindAuction{
     uint public biddingEnd;
     uint public revealEnd;
     bool public ended;
-    
+
     mapping(address => Bid[]) public bids;
     BidRevealed[] public bidsRevealed;
     BidID[] public bidsRevealedPercentID;
@@ -65,7 +65,7 @@ contract BlindAuction{
     // Allowed withdrawals of previous bids
     mapping(address => uint) pendingReturns;
 
-    event AuctionEnded(BidRevealed[] winners, uint percentToPay);
+    event AuctionEnded(BidRevealed[] winners, uint sumBids, uint percentToPay);
 
     // Errors that describe failures.
 
@@ -119,9 +119,18 @@ contract BlindAuction{
 
     function blind_a_bid(uint value, uint percent, bytes32 secret) 
       public pure returns (bytes32){
-        return keccak256(abi.encodePacked(value, percent, secret));
+        return keccak256(abi.encode(value, percent, secret));
     }
 
+    // function only for test
+    function bidsRevealedPercentID_len() public view returns (uint){
+        return bidsRevealedPercentID.length;
+    }
+
+    // function only for test
+    function bidsRevealed_len() public view returns (uint){
+        return bidsRevealed.length;
+    }
     /// Reveal your blinded bids. You will get a refund for all
     /// correctly blinded invalid bids and for all bids except for
     /// the winners bids.
@@ -201,16 +210,13 @@ contract BlindAuction{
 
         BidRevealed[] memory winnersAuction;
 
-        uint percentToPay = 10;
+        uint percentToPay;
         uint sumBids = 0;
         uint length = bidsRevealedPercentID.length;
         for(uint i = 0;i < length;i++){
             BidRevealed storage bidActual = bidsRevealed[bidsRevealedPercentID[i].id];
             if(sumBids < boneTotal){
-                // require(false, "LLego");
                 if(sumBids + bidActual.amount >= boneTotal){
-                    percentToPay = bidActual.percent;
-
                     uint exceed = sumBids + bidActual.amount - boneTotal;
                     bidActual.amount -= exceed;
 
@@ -218,8 +224,9 @@ contract BlindAuction{
 
                     winnersAuction = new BidRevealed[](i + 1);
 
+                    percentToPay = bidActual.percent;
+
                     for(uint j = 0;j <= i;j++){
-                        require(j <= 0, "LLEGO");
                         BidRevealed storage bidAux = bidsRevealed[bidsRevealedPercentID[j].id];
                         winnersAuction[j] = BidRevealed(bidAux.addressBidder, uint256(bidAux.amount), uint256(bidAux.percent));
                     }
@@ -231,7 +238,19 @@ contract BlindAuction{
                 pendingReturns[bidActual.addressBidder] += bidActual.amount;
             }
         }
-        emit AuctionEnded(winnersAuction, percentToPay);
+
+        // if sum bids no exceed boneTotal, all bids are winners
+        if(sumBids < boneTotal && length > 0){
+            winnersAuction = new BidRevealed[](length);
+
+            percentToPay = bidsRevealed[bidsRevealedPercentID[length - 1].id].percent;
+
+            for(uint j = 0;j < length;j++){
+                BidRevealed storage bidAux = bidsRevealed[bidsRevealedPercentID[j].id];
+                winnersAuction[j] = BidRevealed(bidAux.addressBidder, uint256(bidAux.amount), uint256(bidAux.percent));
+            }
+        }
+        emit AuctionEnded(winnersAuction, sumBids, percentToPay);
 
         ended = true;
         beneficiary.transfer(sumBids);
