@@ -168,6 +168,8 @@
 %   }%
 % }
 
+\renewcommand{\chaptername}{Capítulo}
+\renewcommand{\listfigurename}{Lista de Figuras}
 \renewcommand{\nomname}{Glosario}
 \newcommand{\advisor}[1]{\def\@advisor{#1}}
 \newcommand{\degree}[1]{\def\@degree{#1}}
