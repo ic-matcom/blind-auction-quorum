@@ -28,7 +28,7 @@ def auction_random():
 
     wait_chain(chain, blind_auction.biddingEnd(), "Waiting for bidding end")
 
-    stats_revealBid = open("stats_revealBid",'a')
+    stats_revealBid = open("stats/stats_revealBid",'a')
     for i in range(bidders):
         values = [j for j,k,l in bids[i]]
         percents = [k for j,k,l in bids[i]]
@@ -43,14 +43,12 @@ def auction_random():
 
     tx_end = blind_auction.auctionEnd({"from" : accounts[0]})
 
-    # print(tx_end.gas_used)
     print(tx_end.events)
     print(blind_auction.boneTotal())
 
-    stats_auctionEnd = open("stats_auctionEnd",'a')
+    stats_auctionEnd = open("stats/stats_auctionEnd",'a')
     stats_auctionEnd.write(str(blind_auction.bidsRevealed_len()) + " " + str(tx_end.gas_used) + "\n")
 
-    # stats_auctionEnd = open("stats_auctionEnd",'a')
     for i in range(bidders):
         balance_tmp = accounts[i + 1].balance()
         tx_withdraw = blind_auction.withdraw({"from" : accounts[i + 1]})
